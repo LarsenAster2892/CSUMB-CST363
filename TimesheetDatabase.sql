@@ -1,14 +1,25 @@
-/*
-CSUMB
-CST363 Introduction to Database System
-SP-15B
-Instructor	: Dr. Wang
-Team	:  10 - Clarus Solutions
-Members	: Gracie Alderete-Fisher
-	  Nigel Devaugh
-	  Clarence Mitchell
-*/
+cl scr;
+--
+--
+--
+set pagesize 1000;
+set linesize 120;
+set echo off;
+set verify off;
+set heading off;
 
+spool C:\cst363Oracle\Output\TeamProjectFinalCreateDB.txt;
+
+/*******************************************************
+* CSUMB
+* CST363 Introduction to Database System
+* SP-15B
+* Instructor	: Dr. Wang
+* Team	        :  10 - Clarus Solutions
+* Members	    : Gracie Alderete-Fisher
+*        	      Nigel Devaughn
+*	              Clarence Mitchell
+********************************************************/
 --
 -- Remove Sequences
 --
@@ -55,18 +66,18 @@ CREATE TABLE approval (
   notes          varchar2(255) DEFAULT '', 
   status         number(3) NOT NULL, 
   datecreated    date NOT NULL, 
-  PRIMARY KEY (approvalID)) AUTO_INCREMENT = 1;
+  PRIMARY KEY (approvalID));
 CREATE TABLE project (
   projecID  number(10) NOT NULL, 
   title     varchar2(255) NOT NULL, 
   startdate date, 
   enddate   date, 
-  PRIMARY KEY (projecID)) AUTO_INCREMENT = 1;
+  PRIMARY KEY (projecID));
 CREATE TABLE projectAssignment (
   ProjectAssignID number(10) NOT NULL, 
   employeeid      number(10) NOT NULL, 
   projectid       number(10) NOT NULL, 
-  PRIMARY KEY (ProjectAssignID)) AUTO_INCREMENT = 1;
+  PRIMARY KEY (ProjectAssignID));
 CREATE TABLE timesheet (
   TimesheetID    number(10) NOT NULL, 
   projectid      number(10) NOT NULL, 
@@ -74,7 +85,7 @@ CREATE TABLE timesheet (
   weekstartdate  date NOT NULL, 
   weekendingdate date NOT NULL, 
   ApproveDate    date NOT NULL, 
-  PRIMARY KEY (TimesheetID)) AUTO_INCREMENT = 1;
+  PRIMARY KEY (TimesheetID));
 CREATE TABLE employee (
   employeeID  number(10) NOT NULL, 
   firstname   varchar2(255) NOT NULL, 
@@ -84,7 +95,7 @@ CREATE TABLE employee (
   isactive    number(3) DEFAULT '0' NOT NULL, 
   DeptID      number(10), 
   ApproverID  number(10) NOT NULL, 
-  PRIMARY KEY (employeeID)) AUTO_INCREMENT = 1;
+  PRIMARY KEY (employeeID));
 CREATE TABLE Department (
   deptID        number(10) NOT NULL, 
   DeptName      varchar2(50) NOT NULL, 
@@ -96,7 +107,7 @@ CREATE TABLE timesheetDetail (
   projectid         number(10), 
   workday           date NOT NULL, 
   hours             number(10, 0) NOT NULL, 
-  PRIMARY KEY (TimesheetDetailID)) AUTO_INCREMENT = 1;
+  PRIMARY KEY (TimesheetDetailID));
 CREATE INDEX index_approval_status 
   ON approval (status);
 CREATE UNIQUE INDEX index_project_title_unique 
@@ -119,6 +130,9 @@ ALTER TABLE timesheet ADD CONSTRAINT fk_timesheet_project FOREIGN KEY (projectid
 ALTER TABLE timesheet ADD CONSTRAINT fk_timesheet_employee FOREIGN KEY (employeeid) REFERENCES employee (employeeID) ON DELETE Cascade;
 ALTER TABLE employee ADD CONSTRAINT fk_DeptNumber FOREIGN KEY (DeptID) REFERENCES Department (deptID) ON DELETE Set null;
 ALTER TABLE Department ADD CONSTRAINT fk_manager_of_dept FOREIGN KEY (DeptManagerID) REFERENCES employee (employeeID);
-ALTER TABLE timesheet ADD CONSTRAINT fk_timesheet_employee2 FOREIGN KEY (employeeid) REFERENCES employee (employeeID) ON DELETE Cascade;
 ALTER TABLE timesheetDetail ADD CONSTRAINT fk_timesheetDetail_project FOREIGN KEY (projectid) REFERENCES project (projecID) ON DELETE Set null;
 ALTER TABLE timesheetDetail ADD CONSTRAINT fk_timesheetDetail_timesheet FOREIGN KEY (timesheetid) REFERENCES timesheet (TimesheetID) ON DELETE Cascade;
+
+--
+-- Turn off Spooled output
+spool off

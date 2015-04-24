@@ -24,3 +24,5 @@ prompt The following record has been added:;
 prompt;
 
 select * FROM timesheet WHERE timesheetID = '&vTimesheetID';
+
+start C:\Users\ndevaughn\Desktop\Main.sql;

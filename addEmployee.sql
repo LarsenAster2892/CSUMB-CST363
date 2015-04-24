@@ -1,6 +1,24 @@
+/*
+************************************************
+CSUMB
+CST363 Introduction to Database System
+SP-15B
+Instructor	: Dr. Wang
+Team	:  10 - Clarus Solutions
+Members	: Gracie Alderete-Fisher
+	  Nigel Devaughn
+	  Clarence Mitchell
+************************************************
+*/
+
 set echo off;
 set verify off;
 set heading off;
+
+set pagesize 1000;
+set linesize 120;
+
+spool C:\cst363Oracle\Output\TimesheetAddEmployee.txt;
 
 prompt;
 prompt --- Add Employee Form ---;
@@ -17,16 +35,23 @@ accept vEmail prompt 'Please enter the employee email address: ';
 
 accept vPhoneNumber prompt 'Please enter the employee phone number: ';
 
-accept vIsActive prompt 'Employee active (0-1):' ;
-
 accept vDeptID prompt 'Please enter the employee department ID number:' ;
 
 INSERT INTO employee
-VALUES ('&vID', '&vFirstName', '&vLastName', '&vEmail', '&vPhoneNumber', '&vIsActive', '&vDeptID');
+VALUES ('&vID', '&vFirstName', '&vLastName', '&vEmail', '&vPhoneNumber',  '&vDeptID');
 
 prompt The following record has been added:;
 prompt;
 
 select * FROM employee WHERE employeeID = '&vID';
 
-start C:\Users\ndevaughn\Desktop\Main.sql;
+prompt
+accept vPause prompt "Press ENTER to continue.."
+prompt
+--
+-- Turn off Spooled output
+spool off;
+--
+-- Return to Main script
+--
+@@Main.sql;

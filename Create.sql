@@ -1,66 +1,141 @@
+/*
+************************************************
+CSUMB
+CST363 Introduction to Database System
+SP-15B
+Instructor	: Dr. Wang
+Team	:  10 - Clarus Solutions
+Members	: Gracie Alderete-Fisher
+	  Nigel Devaughn
+	  Clarence Mitchell
+************************************************
+*/
+
+
+cl scr;
+--
+--
+--
+set pagesize 1000;
+set linesize 120;
 set echo on
+set verify on
+set heading off
 
-spool C:\Users\ndevaughn\Desktop\main.txt
+spool C:\cst363Oracle\Output\TimesheetCreateDB.txt;
 
-alter table Employee drop CONSTRAINT fk_EmpDepartment;
-alter table Employee drop CONSTRAINT fk_EmpOffice; 
-alter table Timesheet drop CONSTRAINT fk_TimesheetEmployee; 
-alter table TimesheetDetail drop CONSTRAINT fk_timesheet; 
-alter table TimesheetDetail drop CONSTRAINT fk_DetailEmployee; 
-alter table Department drop CONSTRAINT fk_deptManager; 
-alter table Office drop CONSTRAINT fk_officeManager; 
 
-drop table TimesheetDetail;
-drop table Timesheet;
-drop table Employee;
-drop table Department;
-drop table Office;
+--
+-- Remove Sequences
+--
 
-create table Employee
-(
-	employeeId char(4) PRIMARY KEY,
-	firstname varchar2(30), 
-	lastname varchar2(30),
-	email varchar2(40),
-	phone varchar2(15),
-	departmentId char(4),   
-	officeId char(4)
-);      
+DROP SEQUENCE seq_project;
+DROP SEQUENCE seq_timesheet;
+DROP SEQUENCE seq_employee;
+DROP SEQUENCE seq_Department;
+DROP SEQUENCE seq_projectAssignment;
+--
+-- Remove Tables and Constraints
+--
 
-create table Timesheet
-(
-	timesheetId char(4) PRIMARY KEY, 
-	timesheetEndDate date,
-	employeeId char(4)
-);      
+DROP TABLE project CASCADE CONSTRAINTS;
+DROP TABLE timesheet CASCADE CONSTRAINTS;
+DROP TABLE employee CASCADE CONSTRAINTS;
+DROP TABLE Department CASCADE CONSTRAINTS;
+DROP TABLE projectAssignment CASCADE CONSTRAINTS;
 
-create table TimesheetDetail
-(
-	detailId char(4) PRIMARY KEY, 
-	workday date,
-	hours date,
-	timesheetId char(4),      
-	employeeId char(4)
-);      
+--
+-- Create auto increment sequences
+--
 
-create table Department
-(
-	deptId char(4) PRIMARY KEY,
-	deptName varchar2(40),
-	deptManagerId char(4)
-);         
 
-create table Office
-(
-	officeId char(4) PRIMARY KEY,
-	officeLocation varchar2(100),
-	officeManagerId char(4)
-);        
+CREATE SEQUENCE seq_project;
+CREATE SEQUENCE seq_timesheet;
+CREATE SEQUENCE seq_employee;
+CREATE SEQUENCE seq_Department;
+CREATE SEQUENCE seq_projectAssignment;
 
-alter table Employee add CONSTRAINT fk_EmpDepartment FOREIGN KEY (departmentId) REFERENCES Department(departmentId);
-alter table Employee add CONSTRAINT fk_EmpOffice FOREIGN KEY (officeId) REFERENCES Office(officeId);
-alter table Timesheet add CONSTRAINT fk_TimesheetEmployee FOREIGN KEY (employeeId) REFERENCES Employee(employeeId);
-alter table TimesheetDetail add CONSTRAINT fk_timesheet FOREIGN KEY (timesheetId) REFERENCES Timesheet(timesheetId);
-alter table TimesheetDetail add CONSTRAINT fk_DetailEmployee FOREIGN KEY (employeeId) REFERENCES Employee(employeeId);
-alter table Department add CONSTRAINT fk_deptManager FOREIGN KEY (deptManagerId) REFERENCES Employee(employeeId);
-alter table Office add CONSTRAINT fk_officeManager FOREIGN KEY (officeManagerId) REFERENCES Employee(employeeId);
+--
+-- Create Tables
+--
+
+
+CREATE TABLE project (
+  projectID   	number(10) NOT NULL, 
+  projectName 	varchar2(50) NOT NULL, 
+  PRIMARY KEY (projectID));
+  
+CREATE TABLE timesheet (
+  timesheetID    number(10) NOT NULL, 
+  employeeid     number(10) NOT NULL, 
+  weekstartdate  date NOT NULL, 
+  weekendingdate date NOT NULL, 
+  hours          number(5, 2) NOT NULL, 
+  PRIMARY KEY (timesheetID));
+  
+CREATE TABLE employee (
+  employeeID  number(10) NOT NULL, 
+  firstname   varchar2(50) NOT NULL, 
+  lastname    varchar2(50) NOT NULL, 
+  email       varchar2(50) NOT NULL, 
+  phonenumber varchar2(15), 
+  DeptID      number(10), 
+  PRIMARY KEY (employeeID));
+  
+CREATE TABLE Department (
+  deptID        number(10) NOT NULL, 
+  DeptName      varchar2(50) NOT NULL, 
+  DeptManagerID number(10) NOT NULL, 
+  PRIMARY KEY (deptID));
+
+CREATE TABLE projectAssignment (
+  projectAssignID number(10) NOT NULL, 
+  employeeid      number(10) NOT NULL, 
+  projectid       number(10) NOT NULL, 
+  PRIMARY KEY (projectAssignID));
+  
+CREATE UNIQUE INDEX project 
+  ON project (projectName);
+
+CREATE UNIQUE INDEX userProfile 
+  ON employee (email);
+
+CREATE INDEX employee_DeptID 
+  ON employee (DeptID);
+
+CREATE INDEX Department_DeptManagerID 
+  ON Department (DeptManagerID);
+
+--
+-- Add Constraints
+--
+  
+ALTER TABLE employee ADD CONSTRAINT fk_DeptNumber FOREIGN KEY (DeptID) REFERENCES Department (deptID) ON DELETE Set null;
+ALTER TABLE timesheet ADD CONSTRAINT fk_timesheet_employee FOREIGN KEY (employeeid) REFERENCES employee (employeeID) ON DELETE Cascade;
+ALTER TABLE projectAssignment ADD CONSTRAINT fk_projectassignment_employee FOREIGN KEY (employeeid) REFERENCES employee (employeeID) ON DELETE Cascade;
+ALTER TABLE projectAssignment ADD CONSTRAINT fk_projectassignment_project FOREIGN KEY (projectid) REFERENCES project (projectID) ON DELETE Cascade;
+
+--
+-- Load Demo Data
+-- 
+@@loadDepartment.sql;
+@@loadEmployee.sql;
+@@loadProject.sql;
+@@loadProjectAssign.sql;
+@@loadTimesheet.sql;
+
+--
+--  Commit the data
+--
+
+COMMIT;
+set echo off;
+set verify off;
+
+prompt
+accept vPause prompt "Press ENTER to continue.."
+prompt
+--
+-- Turn off Spooled output
+spool off;
+@@Main.sql;

@@ -1,6 +1,26 @@
+/*
+************************************************
+CSUMB
+CST363 Introduction to Database System
+SP-15B
+Instructor	: Dr. Wang
+Team	:  10 - Clarus Solutions
+Members	: Gracie Alderete-Fisher
+	  Nigel Devaughn
+	  Clarence Mitchell
+************************************************
+*/
+
 set echo off;
 set verify off;
 set heading off;
+
+set pagesize 1000;
+set linesize 120;
+
+spool C:\cst363Oracle\Output\TimesheetAddDepartment.txt;
+
+cl scr;
 
 prompt;
 prompt --- Add Department Form ---;
@@ -22,4 +42,13 @@ prompt;
 
 select * FROM Department WHERE deptID = '&vDeptID';
 
-start C:\Users\ndevaughn\Desktop\Main.sql;
+prompt
+accept vPause prompt "Press ENTER to continue.."
+prompt
+--
+-- Turn off Spooled output
+spool off;
+--
+-- Return to Main script
+--
+@@Main.sql;

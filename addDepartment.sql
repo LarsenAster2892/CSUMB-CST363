@@ -21,3 +21,5 @@ prompt The following record has been added:;
 prompt;
 
 select * FROM Department WHERE deptID = '&vDeptID';
+
+start C:\Users\ndevaughn\Desktop\Main.sql;

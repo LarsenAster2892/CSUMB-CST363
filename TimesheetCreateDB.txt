@@ -1,0 +1,785 @@
+SQL> 
+SQL> /*
+SQL> ************************************************
+SQL> CSUMB
+SQL> CST363 Introduction to Database System
+SQL> SP-15B
+SQL> Instructor      : Dr. Wang
+SQL> Team	     :	10 - Clarus Solutions
+SQL> Members	     : Gracie Alderete-Fisher
+SQL> 		       Nigel Devaughn
+SQL> 		       Clarence Mitchell
+SQL> ************************************************
+SQL> */
+SQL> 
+SQL> --
+SQL> -- Remove Sequences
+SQL> --
+SQL> 
+SQL> DROP SEQUENCE seq_project;
+
+Sequence dropped.
+
+SQL> DROP SEQUENCE seq_timesheet;
+
+Sequence dropped.
+
+SQL> DROP SEQUENCE seq_employee;
+
+Sequence dropped.
+
+SQL> DROP SEQUENCE seq_Department;
+
+Sequence dropped.
+
+SQL> DROP SEQUENCE seq_projectAssignment;
+
+Sequence dropped.
+
+SQL> --
+SQL> -- Remove Tables and Constraints
+SQL> --
+SQL> 
+SQL> DROP TABLE project CASCADE CONSTRAINTS;
+
+Table dropped.
+
+SQL> DROP TABLE timesheet CASCADE CONSTRAINTS;
+
+Table dropped.
+
+SQL> DROP TABLE employee CASCADE CONSTRAINTS;
+
+Table dropped.
+
+SQL> DROP TABLE Department CASCADE CONSTRAINTS;
+
+Table dropped.
+
+SQL> DROP TABLE projectAssignment CASCADE CONSTRAINTS;
+
+Table dropped.
+
+SQL> 
+SQL> --
+SQL> -- Create auto increment sequences
+SQL> --
+SQL> 
+SQL> 
+SQL> CREATE SEQUENCE seq_project;
+
+Sequence created.
+
+SQL> CREATE SEQUENCE seq_timesheet;
+
+Sequence created.
+
+SQL> CREATE SEQUENCE seq_employee;
+
+Sequence created.
+
+SQL> CREATE SEQUENCE seq_Department;
+
+Sequence created.
+
+SQL> CREATE SEQUENCE seq_projectAssignment;
+
+Sequence created.
+
+SQL> 
+SQL> --
+SQL> -- Create Tables
+SQL> --
+SQL> 
+SQL> 
+SQL> CREATE TABLE project (
+  2    projectID   number(10) NOT NULL,
+  3    projectName varchar2(50) NOT NULL,
+  4    PRIMARY KEY (projectID));
+
+Table created.
+
+SQL> 
+SQL> CREATE TABLE timesheet (
+  2    timesheetID    number(10) NOT NULL,
+  3    employeeid     number(10) NOT NULL,
+  4    weekstartdate  date NOT NULL,
+  5    weekendingdate date NOT NULL,
+  6    hours	      number(5, 2) NOT NULL,
+  7    PRIMARY KEY (timesheetID));
+
+Table created.
+
+SQL> 
+SQL> CREATE TABLE employee (
+  2    employeeID  number(10) NOT NULL,
+  3    firstname   varchar2(50) NOT NULL,
+  4    lastname    varchar2(50) NOT NULL,
+  5    email	   varchar2(50) NOT NULL,
+  6    phonenumber varchar2(15),
+  7    DeptID	   number(10),
+  8    PRIMARY KEY (employeeID));
+
+Table created.
+
+SQL> 
+SQL> CREATE TABLE Department (
+  2    deptID	     number(10) NOT NULL,
+  3    DeptName      varchar2(50) NOT NULL,
+  4    DeptManagerID number(10) NOT NULL,
+  5    PRIMARY KEY (deptID));
+
+Table created.
+
+SQL> 
+SQL> CREATE TABLE projectAssignment (
+  2    projectAssignID number(10) NOT NULL,
+  3    employeeid      number(10) NOT NULL,
+  4    projectid       number(10) NOT NULL,
+  5    PRIMARY KEY (projectAssignID));
+
+Table created.
+
+SQL> 
+SQL> CREATE UNIQUE INDEX project
+  2    ON project (projectName);
+
+Index created.
+
+SQL> 
+SQL> CREATE UNIQUE INDEX userProfile
+  2    ON employee (email);
+
+Index created.
+
+SQL> 
+SQL> CREATE INDEX employee_DeptID
+  2    ON employee (DeptID);
+
+Index created.
+
+SQL> 
+SQL> CREATE INDEX Department_DeptManagerID
+  2    ON Department (DeptManagerID);
+
+Index created.
+
+SQL> 
+SQL> --
+SQL> -- Add Constraints
+SQL> --
+SQL> 
+SQL> ALTER TABLE employee ADD CONSTRAINT fk_DeptNumber FOREIGN KEY (DeptID) REFERENCES Department (deptID) ON DELETE Set null;
+
+Table altered.
+
+SQL> ALTER TABLE timesheet ADD CONSTRAINT fk_timesheet_employee FOREIGN KEY (employeeid) REFERENCES employee (employeeID) ON DELETE Cascade;
+
+Table altered.
+
+SQL> ALTER TABLE projectAssignment ADD CONSTRAINT fk_projectassignment_employee FOREIGN KEY (employeeid) REFERENCES employee (employeeID) ON DELETE Cascade;
+
+Table altered.
+
+SQL> ALTER TABLE projectAssignment ADD CONSTRAINT fk_projectassignment_project FOREIGN KEY (projectid) REFERENCES project (projectID) ON DELETE Cascade;
+
+Table altered.
+
+SQL> 
+SQL> --
+SQL> -- Load Data
+SQL> --
+SQL> @@loadDepartment.sql;
+SQL> 
+SQL> 
+SQL> INSERT INTO Department VALUES (1, N'TechnicalSales', 27);
+
+1 row created.
+
+SQL> INSERT INTO Department VALUES (2, N'ConsumerSales', 31);
+
+1 row created.
+
+SQL> INSERT INTO Department VALUES (3, N'Technical', 15);
+
+1 row created.
+
+SQL> INSERT INTO Department VALUES (4, N'Marketing', 13);
+
+1 row created.
+
+SQL> INSERT INTO Department VALUES (5, N'NationalSales', 24);
+
+1 row created.
+
+SQL> INSERT INTO Department VALUES (6, N'Cutomer', 26);
+
+1 row created.
+
+SQL> INSERT INTO Department VALUES (7, N'Accounting', 21);
+
+1 row created.
+
+SQL> INSERT INTO Department VALUES (8, N'BusinessSales', 30);
+
+1 row created.
+
+SQL> INSERT INTO Department VALUES (9, N'Corporate Care', 18);
+
+1 row created.
+
+SQL> INSERT INTO Department VALUES (10, N'CorporateSales', 29);
+
+1 row created.
+
+SQL> @@loadEmployee.sql;
+SQL> 
+SQL> INSERT INTO employee VALUES (1, 'Nicole', 'Bartlett', 'mxvycbbq.uqglmvemqj@pahzpxi.nfsgne.org', '439-511-0325', 8);
+
+1 row created.
+
+SQL> INSERT INTO employee VALUES (2, 'Christine', 'Rubio', 'pffqpcs.otognw@bjaagneo.iezbqy.com', '935-071-7649', 6);
+
+1 row created.
+
+SQL> INSERT INTO employee VALUES (3, 'Pablo', 'Werner', 'jlkekxb.jnoezuqn@iernqxi.ramcyz.net', '2675933269', 6);
+
+1 row created.
+
+SQL> INSERT INTO employee VALUES (4, 'Darnell', 'Caldero', 'zftonakz.wpnrhgj@plbwlhnhj.qlgggb.com', '055-079-7156', 5);
+
+1 row created.
+
+SQL> INSERT INTO employee VALUES (5, 'Desiree', 'Farmer', 'rfmsnjc.dkpofgol@ksodwvdn.qzfnkz.org', '861356-0986', 9);
+
+1 row created.
+
+SQL> INSERT INTO employee VALUES (6, 'Holly', 'Fernandez', 'sezrhp.wvcark@yrxchiosn.unlqma.com', '712-204-5778', 5);
+
+1 row created.
+
+SQL> INSERT INTO employee VALUES (7, 'Chadwick', 'Trevino', 'jnkubhcu.rtfbdl@bbbxvzp.yfwawa.org', '447619-5836', 5);
+
+1 row created.
+
+SQL> INSERT INTO employee VALUES (8, 'Julie', 'Moreno', 'bxhjipp.qqfjvsh@fhgazmma.rgongv.org', '0825917209', 4);
+
+1 row created.
+
+SQL> INSERT INTO employee VALUES (9, 'Daphne', 'Dudley', 'pygbaphe.jrazystnvq@exaoyde.sfisap.net', '5885136176', 2);
+
+1 row created.
+
+SQL> INSERT INTO employee VALUES (10, 'Jea', 'Trevino', 'ztunmfy.bdhxqpv@vmoecjhyz.ljwqft.com', '377-6574275', 7);
+
+1 row created.
+
+SQL> INSERT INTO employee VALUES (11, 'Sonya', 'Rya', 'ohrwaae.tpnonora@jfgfibqap.jzezro.com', '3096068544', 8);
+
+1 row created.
+
+SQL> INSERT INTO employee VALUES (12, 'Lindsay', 'Conner', 'uuwuagm.unnzcdf@psdyzbh.drhjat.net', '415056-0096', 4);
+
+1 row created.
+
+SQL> INSERT INTO employee VALUES (13, 'Katina', 'Archer', 'mcvocet.mrfuoqw@eoxsjmktv.lksvua.com', '337511-2021', 6);
+
+1 row created.
+
+SQL> INSERT INTO employee VALUES (14, 'Wendi', 'Hanso', 'rgmkpmt.dlqpzachq@igyleuviv.towgup.org', '0023798453', 1);
+
+1 row created.
+
+SQL> INSERT INTO employee VALUES (15, 'Kari', 'Hunter', 'raemtnls.bupgogkp@oojzkmzy.qggqgd.org', '610-476-2904', 4);
+
+1 row created.
+
+SQL> INSERT INTO employee VALUES (16, 'Chadwick', 'Velazquez', 'aizffbf.qiwyuzk@kbhunisg.lyfvim.org', '025072-6488', 5);
+
+1 row created.
+
+SQL> INSERT INTO employee VALUES (17, 'Seth', 'Gordo', 'djtskqbg.qnfvnhwyr@elvahhuba.oziwlw.com', '168-102-3488', 2);
+
+1 row created.
+
+SQL> INSERT INTO employee VALUES (18, 'Warre', 'West', 'aaqbdvkg.ppqvuuj@kxvfzzsrw.xjdbbn.net', '365588-8897', 10);
+
+1 row created.
+
+SQL> INSERT INTO employee VALUES (19, 'Bernard', 'Rowe', 'pamlwor.cdcspkzgx@rzjfvpgyh.yts-vn.net', '098-6050034', 7);
+
+1 row created.
+
+SQL> INSERT INTO employee VALUES (20, 'Shelby', 'Bradford', 'qtrycouw.iqzycloq@btahxcmsj.kzyqt-.org', '5849912774', 2);
+
+1 row created.
+
+SQL> INSERT INTO employee VALUES (21, 'Devo', 'Henry', 'ptfwkcc.ldupscr@zvawdethk.wxwvit.org', '304367-2095', 10);
+
+1 row created.
+
+SQL> INSERT INTO employee VALUES (22, 'Tonia', 'Housto', 'wspofqfg.dpthghe@cofzotgor.odsity.org', '454-9410795', 9);
+
+1 row created.
+
+SQL> INSERT INTO employee VALUES (23, 'Janet', 'Fitzgerald', 'vcynabv.fhzolh@mrbrgsn.eigzov.net', '831963-9120', 10);
+
+1 row created.
+
+SQL> INSERT INTO employee VALUES (24, 'Christia', 'Harringto', 'kriwgvk.ptgrxijuu@matxzfcu.zlt-w-.net', '8067348946', 5);
+
+1 row created.
+
+SQL> INSERT INTO employee VALUES (25, 'Jose', 'Garrett', 'tnqenug.youzrriz@nqcdlxrl.oegajz.com', '5729937117', 9);
+
+1 row created.
+
+SQL> INSERT INTO employee VALUES (26, 'Kristie', 'Hines', 'lrmcfm.qgolcyih@odcnnhyv.sbtecq.net', '820-010-5826', 10);
+
+1 row created.
+
+SQL> INSERT INTO employee VALUES (27, 'Joshua', 'Edwards', 'rpgmjmvr.hibeduxt@ldjigse.kmvvuy.com', '017-293-9609', 5);
+
+1 row created.
+
+SQL> INSERT INTO employee VALUES (28, 'Melody', 'Reese', 'brzjzz.qndqgz@srmjdyru.-vfzne.net', '627-681-4693', 8);
+
+1 row created.
+
+SQL> INSERT INTO employee VALUES (29, 'Cassandra', 'Hendrix', 'dlddqhnk.mzhhfufykd@ovxzacrom.klcrdx.org', '0666499877', 10);
+
+1 row created.
+
+SQL> INSERT INTO employee VALUES (30, 'Bridgette', 'Chandler', 'tswdwor.yidtyiuq@qecjmzhv.xcre-r.com', '3103181051', 1);
+
+1 row created.
+
+SQL> INSERT INTO employee VALUES (31, 'Marlo', 'Hays', 'uyywtwm.ezlygmxrjb@dwbxyhoe.kzncfd.com', '509-2032280', 9);
+
+1 row created.
+
+SQL> INSERT INTO employee VALUES (32, 'Hilary', 'Lester', 'hcsuzq.tcdjwdnlc@wlqmudjwd.lxto-h.net', '703369-9814', 8);
+
+1 row created.
+
+SQL> INSERT INTO employee VALUES (33, 'Karl', 'Nixo', 'wjhwqhow.mftxspl@dwolqznjc.rrzpsj.net', '587-896-3801', 8);
+
+1 row created.
+
+SQL> INSERT INTO employee VALUES (34, 'Eva', 'Valenzuela', 'pavthkjv.srjbfdlid@gpantwg.gmahxw.org', '038-0788052', 1);
+
+1 row created.
+
+SQL> INSERT INTO employee VALUES (35, 'Shari', 'Montes', 'lhyvkz.zrjcmeizt@llxtxfp.hkmwct.net', '488-353-8414', 9);
+
+1 row created.
+
+SQL> INSERT INTO employee VALUES (36, 'Jarrod', 'George', 'jevbzppw.gcjcfd@vtfrfmwlv.v-qpnc.org', '5586078924', 5);
+
+1 row created.
+
+SQL> INSERT INTO employee VALUES (37, 'Gabriel', 'Proctor', 'whemegt.xysulixpvq@uodcjwhkq.wefijc.org', '8344985060', 10);
+
+1 row created.
+
+SQL> INSERT INTO employee VALUES (38, 'Billy', 'Phelps', 'lzzqfull.xpvfvxyvp@dbvwrd.dtyvhy.net', '653-2194185', 3);
+
+1 row created.
+
+SQL> INSERT INTO employee VALUES (39, 'Judy', 'Evans', 'jmaswcxs.gjxxxbl@rdhqksm.wymwgr.com', '329-5045792', 10);
+
+1 row created.
+
+SQL> INSERT INTO employee VALUES (40, 'Ramona', 'Ochoa', 'nkkosvs.yanjvpngl@eyzdrdtyn.njjddx.com', '637-2606497', 2);
+
+1 row created.
+
+SQL> INSERT INTO employee VALUES (41, 'Ala', 'Holmes', 'pijlahes.bthbrkol@tdeanqkos.ldpryk.net', '302-3156064', 5);
+
+1 row created.
+
+SQL> INSERT INTO employee VALUES (42, 'Jamie', 'Weeks', 'wqtritye.ltmggpyz@yzrvoyxmr.wziu-d.org', '526-0347204', 7);
+
+1 row created.
+
+SQL> INSERT INTO employee VALUES (43, 'Gabriela', 'Burns', 'dkopkpf.fjqtblliom@uxcxsv.oznor-.net', '117-445-5813', 5);
+
+1 row created.
+
+SQL> INSERT INTO employee VALUES (44, 'Traci', 'Luna', 'mihxpvq.acvflxmui@agerkuoc.iumkoh.org', '196475-9673', 8);
+
+1 row created.
+
+SQL> INSERT INTO employee VALUES (45, 'Mario', 'Ashley', 'ykmlbkve.qpnwsth@bzibamw.r-sjrm.com', '1005220735', 10);
+
+1 row created.
+
+SQL> INSERT INTO employee VALUES (46, 'Jessica', 'Schwartz', 'tvhoqps.zxbqfdhsw@wvetnszj.atajvo.com', '221-753-3531', 9);
+
+1 row created.
+
+SQL> INSERT INTO employee VALUES (47, 'Jeffery', 'Mc Gee', 'izblkub.ygsmkzwgo@llltsvuhc.osdlpt.com', '871-483-9771', 1);
+
+1 row created.
+
+SQL> INSERT INTO employee VALUES (48, 'Sonja', 'Fuentes', 'tzmfyjd.idqoitkjha@iuzxvtlj.vdyyqe.org', '740745-5774', 9);
+
+1 row created.
+
+SQL> INSERT INTO employee VALUES (49, 'Joni', 'Chandler', 'mszwauo.ptpzljxfr@bvfscvq.rbvxae.org', '991-2524872', 9);
+
+1 row created.
+
+SQL> INSERT INTO employee VALUES (50, 'Bennie', 'Landry', 'djvoxen.jvjymrhm@qjuyhxpg.vbvsea.net', '081-857-3285', 4);
+
+1 row created.
+
+SQL> @@loadProject.sql;
+SQL> 
+SQL> INSERT INTO project VALUES (2, 'Oracle Database Development');
+
+1 row created.
+
+SQL> INSERT INTO project VALUES (1, 'Computer Hardware installation');
+
+1 row created.
+
+SQL> INSERT INTO project VALUES (3, 'Website Development');
+
+1 row created.
+
+SQL> INSERT INTO project VALUES (4, 'Mobile Phone App Development');
+
+1 row created.
+
+SQL> @@loadProjectAssign.sql;
+SQL> 
+SQL> INSERT INTO projectAssignment VALUES (1, 25, 3);
+
+1 row created.
+
+SQL> INSERT INTO projectAssignment VALUES (2, 48, 4);
+
+1 row created.
+
+SQL> INSERT INTO projectAssignment VALUES (3, 35, 4);
+
+1 row created.
+
+SQL> INSERT INTO projectAssignment VALUES (4, 42, 3);
+
+1 row created.
+
+SQL> INSERT INTO projectAssignment VALUES (5, 12, 2);
+
+1 row created.
+
+SQL> INSERT INTO projectAssignment VALUES (6, 42, 3);
+
+1 row created.
+
+SQL> INSERT INTO projectAssignment VALUES (7, 26, 4);
+
+1 row created.
+
+SQL> INSERT INTO projectAssignment VALUES (8, 2, 1);
+
+1 row created.
+
+SQL> INSERT INTO projectAssignment VALUES (9, 39, 4);
+
+1 row created.
+
+SQL> INSERT INTO projectAssignment VALUES (10, 4, 1);
+
+1 row created.
+
+SQL> INSERT INTO projectAssignment VALUES (11, 6, 1);
+
+1 row created.
+
+SQL> INSERT INTO projectAssignment VALUES (12, 3, 1);
+
+1 row created.
+
+SQL> INSERT INTO projectAssignment VALUES (13, 32, 3);
+
+1 row created.
+
+SQL> INSERT INTO projectAssignment VALUES (14, 3, 1);
+
+1 row created.
+
+SQL> INSERT INTO projectAssignment VALUES (15, 45, 4);
+
+1 row created.
+
+SQL> INSERT INTO projectAssignment VALUES (16, 30, 2);
+
+1 row created.
+
+SQL> INSERT INTO projectAssignment VALUES (17, 21, 4);
+
+1 row created.
+
+SQL> INSERT INTO projectAssignment VALUES (18, 45, 4);
+
+1 row created.
+
+SQL> INSERT INTO projectAssignment VALUES (19, 44, 3);
+
+1 row created.
+
+SQL> INSERT INTO projectAssignment VALUES (20, 7, 1);
+
+1 row created.
+
+SQL> INSERT INTO projectAssignment VALUES (21, 48, 4);
+
+1 row created.
+
+SQL> INSERT INTO projectAssignment VALUES (22, 18, 4);
+
+1 row created.
+
+SQL> INSERT INTO projectAssignment VALUES (23, 45, 4);
+
+1 row created.
+
+SQL> INSERT INTO projectAssignment VALUES (24, 30, 2);
+
+1 row created.
+
+SQL> INSERT INTO projectAssignment VALUES (25, 5, 3);
+
+1 row created.
+
+SQL> INSERT INTO projectAssignment VALUES (26, 19, 3);
+
+1 row created.
+
+SQL> INSERT INTO projectAssignment VALUES (27, 29, 4);
+
+1 row created.
+
+SQL> INSERT INTO projectAssignment VALUES (28, 5, 3);
+
+1 row created.
+
+SQL> INSERT INTO projectAssignment VALUES (29, 42, 3);
+
+1 row created.
+
+SQL> INSERT INTO projectAssignment VALUES (30, 9, 2);
+
+1 row created.
+
+SQL> INSERT INTO projectAssignment VALUES (31, 8, 2);
+
+1 row created.
+
+SQL> INSERT INTO projectAssignment VALUES (32, 2, 1);
+
+1 row created.
+
+SQL> INSERT INTO projectAssignment VALUES (33, 6, 1);
+
+1 row created.
+
+SQL> INSERT INTO projectAssignment VALUES (34, 45, 4);
+
+1 row created.
+
+SQL> INSERT INTO projectAssignment VALUES (35, 33, 3);
+
+1 row created.
+
+SQL> INSERT INTO projectAssignment VALUES (36, 35, 4);
+
+1 row created.
+
+SQL> INSERT INTO projectAssignment VALUES (37, 30, 2);
+
+1 row created.
+
+SQL> INSERT INTO projectAssignment VALUES (38, 36, 1);
+
+1 row created.
+
+SQL> INSERT INTO projectAssignment VALUES (39, 24, 1);
+
+1 row created.
+
+SQL> INSERT INTO projectAssignment VALUES (40, 37, 4);
+
+1 row created.
+
+SQL> INSERT INTO projectAssignment VALUES (41, 10, 3);
+
+1 row created.
+
+SQL> INSERT INTO projectAssignment VALUES (42, 22, 3);
+
+1 row created.
+
+SQL> INSERT INTO projectAssignment VALUES (43, 17, 2);
+
+1 row created.
+
+SQL> INSERT INTO projectAssignment VALUES (44, 4, 1);
+
+1 row created.
+
+SQL> INSERT INTO projectAssignment VALUES (45, 26, 4);
+
+1 row created.
+
+SQL> INSERT INTO projectAssignment VALUES (46, 46, 4);
+
+1 row created.
+
+SQL> INSERT INTO projectAssignment VALUES (47, 16, 1);
+
+1 row created.
+
+SQL> INSERT INTO projectAssignment VALUES (48, 2, 1);
+
+1 row created.
+
+SQL> INSERT INTO projectAssignment VALUES (49, 40, 2);
+
+1 row created.
+
+SQL> INSERT INTO projectAssignment VALUES (50, 15, 2);
+
+1 row created.
+
+SQL> @@loadTimesheet.sql;
+SQL> 
+SQL> -- SET DATE FORMAT FOR insert*/
+SQL> ALTER SESSION SET NLS_DATE_FORMAT='YYYY-MM-DD';
+
+Session altered.
+
+SQL> 
+SQL> INSERT INTO timesheet VALUES (1, 25,'2015-01-30','2015-02-06', 33.50);
+
+1 row created.
+
+SQL> INSERT INTO timesheet VALUES (2, 48,'2015-03-29','2015-04-05', 41.68);
+
+1 row created.
+
+SQL> INSERT INTO timesheet VALUES (3, 35,'2015-01-04','2015-01-11', 30.93);
+
+1 row created.
+
+SQL> INSERT INTO timesheet VALUES (4, 42,'2015-01-09','2015-01-16', 33.70);
+
+1 row created.
+
+SQL> INSERT INTO timesheet VALUES (5, 12,'2015-01-18','2015-01-25', 14.87);
+
+1 row created.
+
+SQL> INSERT INTO timesheet VALUES (6, 42,'2015-02-08','2015-02-15', 26.99);
+
+1 row created.
+
+SQL> INSERT INTO timesheet VALUES (7, 26,'2015-03-08','2015-03-15', 46.92);
+
+1 row created.
+
+SQL> INSERT INTO timesheet VALUES (8, 2,'2015-01-23','2015-01-30', 17.41);
+
+1 row created.
+
+SQL> INSERT INTO timesheet VALUES (9, 39,'2015-02-01','2015-02-08', 10.80);
+
+1 row created.
+
+SQL> INSERT INTO timesheet VALUES (10, 4,'2015-03-13','2015-03-20', 7.66);
+
+1 row created.
+
+SQL> INSERT INTO timesheet VALUES (11, 6,'2015-02-13','2015-02-20', 44.35);
+
+1 row created.
+
+SQL> INSERT INTO timesheet VALUES (12, 3,'2015-02-06','2015-02-13', 19.82);
+
+1 row created.
+
+SQL> INSERT INTO timesheet VALUES (13, 32,'2015-01-25','2015-02-01', 9.10);
+
+1 row created.
+
+SQL> INSERT INTO timesheet VALUES (14, 3,'2015-04-19','2015-04-26', 25.80);
+
+1 row created.
+
+SQL> INSERT INTO timesheet VALUES (15, 45,'2015-01-11','2015-01-18', 43.34);
+
+1 row created.
+
+SQL> INSERT INTO timesheet VALUES (16, 30,'2015-01-16','2015-01-23', 28.30);
+
+1 row created.
+
+SQL> INSERT INTO timesheet VALUES (17, 21,'2015-04-05','2015-04-12', 16.72);
+
+1 row created.
+
+SQL> INSERT INTO timesheet VALUES (18, 45,'2015-04-12','2015-04-19', 49.62);
+
+1 row created.
+
+SQL> INSERT INTO timesheet VALUES (19, 44,'2015-04-10','2015-04-17', 33.28);
+
+1 row created.
+
+SQL> INSERT INTO timesheet VALUES (20, 7,'2015-03-15','2015-03-22', 42.73);
+
+1 row created.
+
+SQL> INSERT INTO timesheet VALUES (21, 48,'2015-04-03','2015-04-10', 29.30);
+
+1 row created.
+
+SQL> INSERT INTO timesheet VALUES (22, 18,'2015-03-06','2015-03-13', 36.42);
+
+1 row created.
+
+SQL> INSERT INTO timesheet VALUES (23, 45,'2015-02-20','2015-02-27', 45.62);
+
+1 row created.
+
+SQL> INSERT INTO timesheet VALUES (24, 30,'2015-03-01','2015-03-08', 17.53);
+
+1 row created.
+
+SQL> INSERT INTO timesheet VALUES (25, 5,'2015-02-15','2015-02-22', 26.16);
+
+1 row created.
+
+SQL> 
+SQL> -- SET DATE FORMAT back*/
+SQL> ALTER SESSION SET NLS_DATE_FORMAT='DD-Mon-YYYY';
+
+Session altered.
+
+SQL> 
+SQL> 
+SQL> 
+SQL> --
+SQL> --  Commit the data
+SQL> --
+SQL> 
+SQL> COMMIT;
+
+Commit complete.
+
+SQL> 
+SQL> --
+SQL> -- Turn off Spooled output
+SQL> spool off;

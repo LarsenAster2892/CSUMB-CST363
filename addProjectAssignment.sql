@@ -20,3 +20,5 @@ prompt The following record has been added:;
 prompt;
 
 select * FROM projectAssignment WHERE projectAssignID = '&vProjectAssignmentID';
+
+start C:\Users\ndevaughn\Desktop\Main.sql;

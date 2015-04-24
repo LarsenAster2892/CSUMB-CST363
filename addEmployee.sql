@@ -28,3 +28,5 @@ prompt The following record has been added:;
 prompt;
 
 select * FROM employee WHERE employeeID = '&vID';
+
+start C:\Users\ndevaughn\Desktop\Main.sql;

@@ -18,3 +18,5 @@ prompt The following record has been added:;
 prompt;
 
 select * FROM project WHERE projectID = '&vProjectID';
+
+start C:\Users\ndevaughn\Desktop\Main.sql;

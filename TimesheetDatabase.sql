@@ -113,7 +113,6 @@ ALTER TABLE projectAssignment ADD CONSTRAINT fk_projectassignment_employee FOREI
 ALTER TABLE projectAssignment ADD CONSTRAINT fk_projectassignment_project FOREIGN KEY (projectid) REFERENCES project (projectID) ON DELETE Cascade;
 ALTER TABLE timesheet ADD CONSTRAINT fk_timesheet_employee FOREIGN KEY (employeeid) REFERENCES employee (employeeID) ON DELETE Cascade;
 ALTER TABLE employee ADD CONSTRAINT fk_DeptNumber FOREIGN KEY (DeptID) REFERENCES Department (deptID) ON DELETE Set null;
-ALTER TABLE timesheet ADD CONSTRAINT fk_timesheet_employee2 FOREIGN KEY (employeeid) REFERENCES employee (employeeID) ON DELETE Cascade;
 
 
 
